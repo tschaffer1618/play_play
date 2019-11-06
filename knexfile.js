@@ -4,7 +4,7 @@ module.exports = {
 
   development: {
     client: 'pg',
-    connection: 'postgres://localhost/publications-dev',
+    connection: 'postgres://localhost/publications_dev',
     migrations: {
       directory: './db/migrations'
     },
@@ -15,7 +15,7 @@ module.exports = {
   },
   test: {
     client: 'pg',
-    connection: 'postgres://localhost/publications-test',
+    connection: 'postgres://localhost/publications_test',
     migrations: {
       directory: './db/migrations'
     },
@@ -23,7 +23,7 @@ module.exports = {
   },
   production: {
     client: 'pg',
-    connection: 'postgres://aws-hostname.com/publications-prod',
+    connection: 'postgres://aws-hostname.com/publications_prod',
     migrations: {
       directory: './db/migrations'
     },
