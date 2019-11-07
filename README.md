@@ -16,4 +16,6 @@ knex migrate:latest --env test
 
 # run your tests
 npm test
+
+# set up Heroku
 ```
