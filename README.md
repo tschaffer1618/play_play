@@ -1,31 +1,32 @@
-## Setup
+# All your Express base are belong to us
 
 [![Build Status](https://travis-ci.com/turingschool-examples/all-your-base.svg?branch=master)](https://travis-ci.com/turingschool-examples/all-your-base)
 
-```
-npm install
+## Initial setup
+`npm install`
 
-# set up dev database
+#### Set up your local database
+```
 createdb publications_dev
 knex migrate:latest
 knex seed:run
+```
 
-# set up test database
+#### Set up your test database
+```
 createdb publications_test
 knex migrate:latest --env test
+```
 
-# run your tests
-npm test
+## How to run your tests
+`npm test`
 
-
-# Production
-
-# set up Heroku
-
+## Setting up your production environment
+- Update your `knex.js` file to use your Heroku database instance
+- Run the following commands to get started:
+```
 heroku run bash
-# and then
 npm install
 nom install -g knex
 knex migrate:latest
-
 ```
