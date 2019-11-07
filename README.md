@@ -1,6 +1,6 @@
 ## Setup
 
-[![Build Status](https://travis-ci.com/iandouglas/all-your-base.svg?branch=master)](https://travis-ci.com/iandouglas/all-your-base)
+[![Build Status](https://travis-ci.com/turingschool-examples/all-your-base.svg?branch=master)](https://travis-ci.com/turingschool-examples/all-your-base)
 
 ```
 npm install
