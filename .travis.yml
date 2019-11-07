@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - "stable"
+cache:
+  directories:
+    - "node_modules"
+services:
+  - postgresql
+  
+before_install:
+- npm update
+install:
+- npm install
+script:
+- npm test
+
+before_script:
+  - psql -c 'create database publications_test;' -U postgres
+  - knex migrate:latest --env test
