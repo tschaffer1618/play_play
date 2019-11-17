@@ -50,7 +50,7 @@ This repo comes with a lot of things prepared for you. This includes production 
 
 - Start a brand new app on the Heroku dashboard 
 - Add a Postgres instance to your new Heroku app
-- Find the URL of that same Postgres instance and copy it. It should look like a long url. It may look something like like `postgres://sdflkjsdflksdf:9d3367042c8739f39cf869df4ab031fdb653d8381e2302e3a109e7cdc566637c@ec2-174-129-253-53.compute-1.amazonaws.com:5432/d4oqepk9oarmc5`.
+- Find the URL of that same Postgres instance and copy it. It should look like a long url. It may look something like like `postgres://sdflkjsdflksdf:9d3367042c8739f3...`.
 - Update your `knexfile.js` file to use your Heroku database instance. You’ll see a key of `connection` with a value of an empty string. This is where you’ll paste your new Postgres instance URL. 
 
 Once you’ve set all of that up, you’ll need to `add the remote` to your new app. This should work no differently than how you’ve done it with any Rails project. Adding this remote will allow you to run `git push heroku master`. 
