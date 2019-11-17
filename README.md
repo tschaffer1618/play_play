@@ -13,7 +13,7 @@ The easiest way to get started is to run the following command. This will pull d
 #### Set up your local database
 You’ll need to figure out a name for your database. We suggest calling it something like `sweater_weather_dev`.  
 
-To get things set up, you’ll need to access your Postgres instance by typing in `psql` into your terminal. Once there, you can create your database by running the comment `createdb PUT_DATABASE_NAME_HERE_dev`. 
+To get things set up, you’ll need to access your Postgres instance by typing in `psql` into your terminal. Once there, you can create your database by running the comment `CREATE DATABASE PUT_DATABASE_NAME_HERE_dev;`. 
 
 Now you have a database for your new project.
 
@@ -23,9 +23,12 @@ Once you have your database setup, you’ll need to run some migrations (if you 
 `knex migrate:latest`
 
 
+Instructions to create database, run migrations, and seed: 
 ```
 psql
-createdb DATABASE_NAME_dev
+CREATE DATABASE DATABASE_NAME_dev;
+\q
+
 knex migrate:latest
 knex seed:run
 ```
@@ -34,7 +37,10 @@ knex seed:run
 Most of the setup is going to be same as the one you did before. You’ll notice one small difference with setting the environment flag to `test`.  
 
 ```
-createdb PUT_DATABASE_NAME_HERE_test
+psql
+CREATE DATABASE DATABASE_NAME_test;
+\q
+
 knex migrate:latest --env test
 ```
 
