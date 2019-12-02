@@ -1,3 +1,4 @@
+const dotenv = require('dotenv').config();
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
