@@ -7,9 +7,9 @@ const database = require('knex')(configuration);
 
 
 router.get('/', (request, response) => {
-  database('papers').select()
-    .then((papers) => {
-      response.status(200).json(papers);
+  database('favorite_songs').select()
+    .then((favoriteSongs) => {
+      response.status(200).json(favoriteSongs);
     })
     .catch((error) => {
       response.status(500).json({ error });
