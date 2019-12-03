@@ -4,7 +4,7 @@ exports.seed = function(knex) {
       return Promise.all([
 
         knex('favorite_songs').insert({
-          title: 'Milkshake', artist_name: 'Kelis', genre: 'Pop', rating: 3
+          title: 'Milkshake', artist_name: 'Kelis', genre: 'Pop', rating: 38
         }, 'id')
         .then(() => console.log('Seeding complete!'))
         .catch(error => console.log(`Error seeding data: ${error}`))

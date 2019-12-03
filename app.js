@@ -19,6 +19,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/api/v1/favorites', favoriteSongsRouter);
+app.use('/api/v1/favorites', favoriteSongsRouter.getFavoriteSong);
 
 module.exports = app;
