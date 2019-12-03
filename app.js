@@ -11,7 +11,7 @@ var indexRouter = require('./routes/index');
 var favoriteSongsRouter = require('./routes/api/v1/favoriteSongs');
 
 var app = express();
-app.set("port", process.env.PORT || 3000);
+// app.set("port", process.env.PORT || 3000);
 app.locals.title = "Play Play";
 
 app.use(logger('dev'));
@@ -23,8 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/v1/favorites', favoriteSongsRouter.getFavoriteSong);
 
-app.listen(app.get("port"), () => {
-  console.log(`${app.locals.title} is running on ${app.get("port")}.`);
-});
+// app.listen(app.get("port"), () => {
+//   console.log(`${app.locals.title} is running on ${app.get("port")}.`);
+// });
 
 module.exports = app;
