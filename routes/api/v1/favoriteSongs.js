@@ -19,17 +19,17 @@ router.get('/', (request, response) => {
 router.delete("/:id", (request, response) => {
   const favorite = request.body;
   const songId = favorite.id;
-  const songName = favorite.title;
+  const songName = favorite.track_name;
 
   database("favorite_songs").where("id", songId)
     .then(favorite => {
       if (favorite[0]) {
         database("favorite_songs").del().where({ id: songId })
           .then(favorite => {
-            response.status(204).json({ message: `Song with id ${songId} has been removed from your favorites`});
+            response.status(204).send();
           });
       } else {
-        return response.status(404).json({ error: `No song found in favorites with id ${songId}.` });
+        return response.status(404).json({ error: "Song not found" });
       }
     });
 });
