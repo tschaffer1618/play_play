@@ -32,7 +32,6 @@ describe('Test the favorites path', () => {
       const favoriteSongId = favorite[0].id;
       const res = await request(app)
         .delete(`/api/v1/favorites/${favoriteSongId}`);
-        console.log(res)
 
       expect(res.statusCode).toBe(204);
     });
