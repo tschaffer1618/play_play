@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+var formatHelper = require("../../../helpers/formatHelper")
+
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../../../knexfile')[environment];
 const database = require('knex')(configuration);
@@ -10,7 +12,7 @@ const getFavoriteSong = router.get('/:id', (request, response) => {
   database('favorite_songs').where('id', favoriteId)
     .then((favoriteSong) => {
       if (favoriteSong[0]) {
-        response.status(200).json(favoriteSong);
+        response.status(200).send(formatHelper.formatSong(favoriteSong));
       } else {
         response.status(404).json({ error: 'Song not found'});
       }
