@@ -6,7 +6,7 @@ cache:
     - "node_modules"
 services:
   - postgresql
-  
+
 before_install:
 - npm update
 install:
@@ -15,5 +15,5 @@ script:
 - npm test
 
 before_script:
-  - psql -c 'create database publications_test;' -U postgres
+  - psql -c 'create database favorite_songs_test;' -U postgres
   - knex migrate:latest --env test
