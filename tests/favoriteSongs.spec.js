@@ -47,5 +47,19 @@ describe('Test the favorites path', () => {
       expect(res.body[0]).toHaveProperty('rating');
       expect(res.body[0].rating).toBe(68);
     });
+
+    it('sad path', async () => {
+      const favorite = await database('favorite_songs')
+        .where('title', 'I Will Not Bow').select('id');
+      const favoriteSongId = favorite[0].id;
+      const wrongId = favoriteSongId + 10
+      const res = await request(app)
+        .get(`/api/v1/favorites/${wrongId}`);
+
+      expect(res.statusCode).toBe(404);
+
+      expect(res.body).toHaveProperty('error');
+      expect(res.body.error).toBe('Song not found');
+    });
   });
 });
