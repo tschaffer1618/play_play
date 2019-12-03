@@ -17,9 +17,7 @@ router.get('/', (request, response) => {
 });
 
 router.delete("/:id", (request, response) => {
-  const favorite = request.body;
-  const songId = favorite.id;
-  const songName = favorite.track_name;
+  const songId = request.params.id;
 
   database("favorite_songs").where("id", songId)
     .then(favorite => {
