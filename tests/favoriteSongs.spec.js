@@ -62,7 +62,7 @@ describe('Test the favorites path', () => {
       expect(res.body.error).toBe('Song not found');
     });
   });
-  
+
   describe('test favorite DELETE one by id', () => {
     it('happy path', async () => {
       const favorite = await database('favorite_songs')
@@ -72,6 +72,20 @@ describe('Test the favorites path', () => {
         .delete(`/api/v1/favorites/${favoriteSongId}`);
 
       expect(res.statusCode).toBe(204);
+    });
+
+    it('sad path', async () => {
+      const favorite = await database('favorite_songs')
+        .where('title', 'I Will Not Bow').select('id');
+      const favoriteSongId = favorite[0].id;
+      const wrongId = favoriteSongId + 10
+      const res = await request(app)
+        .delete(`/api/v1/favorites/${wrongId}`);
+
+      expect(res.statusCode).toBe(404);
+
+      expect(res.body).toHaveProperty('error');
+      expect(res.body.error).toBe("Song not found");
     });
   });
 });
