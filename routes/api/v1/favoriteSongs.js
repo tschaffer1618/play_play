@@ -16,7 +16,7 @@ router.get('/', (request, response) => {
     });
 });
 
-router.delete("/", (request, response) => {
+router.delete("/:id", (request, response) => {
   const favorite = request.body;
   const songId = favorite.id;
   const songName = favorite.title;
