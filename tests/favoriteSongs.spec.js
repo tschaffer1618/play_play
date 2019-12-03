@@ -38,8 +38,8 @@ describe('Test the favorites path', () => {
       expect(res.body[0]).toHaveProperty('title');
       expect(res.body[0].title).toBe('I Will Not Bow');
 
-      expect(res.body[0]).toHaveProperty('artist_name');
-      expect(res.body[0].artist_name).toBe('Breaking Benjamin');
+      expect(res.body[0]).toHaveProperty('artistName');
+      expect(res.body[0].artistName).toBe('Breaking Benjamin');
 
       expect(res.body[0]).toHaveProperty('genre');
       expect(res.body[0].genre).toBe('Rock');
