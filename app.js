@@ -21,5 +21,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/v1/favorites', favoriteSongsRouter.getFavoriteSong);
 app.use('/api/v1/favorites', favoriteSongsRouter.deleteFavoriteSong);
+app.use('/api/v1/favorites', favoriteSongsRouter.createFavoriteSong);
 
 module.exports = app;
