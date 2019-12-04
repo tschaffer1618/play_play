@@ -16,8 +16,15 @@ describe('Test the favorites path', () => {
       genre: 'Rock',
       rating: 68
     };
+    const favoriteSong2 = {
+      title: 'In Loving Memory',
+      artist_name: 'Alter Bridge',
+      genre: 'Rock',
+      rating: 30
+    };
 
     await database('favorite_songs').insert(favoriteSong, 'id');
+    await database('favorite_songs').insert(favoriteSong2, 'id');
   });
 
   afterEach(() => {
@@ -60,6 +67,32 @@ describe('Test the favorites path', () => {
 
       expect(res.body).toHaveProperty('error');
       expect(res.body.error).toBe('Song not found');
+    });
+  });
+
+  describe('test favorite songs GET all', () => {
+    it('happy path', async () => {
+      const res = await request(app)
+        .get(`/api/v1/favorites`);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.length).toBe(2);
+
+      expect(res.body[0]).toHaveProperty('title');
+      expect(res.body[0].title).toBe('I Will Not Bow');
+      expect(res.body[1].title).toBe('In Loving Memory');
+
+      expect(res.body[0]).toHaveProperty('artistName');
+      expect(res.body[0].artistName).toBe('Breaking Benjamin');
+      expect(res.body[1].artistName).toBe('Alter Bridge');
+
+      expect(res.body[0]).toHaveProperty('genre');
+      expect(res.body[0].genre).toBe('Rock');
+      expect(res.body[1].genre).toBe('Rock');
+
+      expect(res.body[0]).toHaveProperty('rating');
+      expect(res.body[0].rating).toBe(68);
+      expect(res.body[1].rating).toBe(30);
     });
   });
 
