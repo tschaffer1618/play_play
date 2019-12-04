@@ -121,4 +121,65 @@ describe('Test the favorites path', () => {
       expect(res.body.error).toBe("Song not found");
     });
   });
+
+  describe('test favorite song POST', () => {
+    it('happy path', async () => {
+      const body = {
+        "title": "Don't Stop Me Now",
+        "artistName": "Queen"
+      }
+
+      const res = await request(app)
+        .post("/api/v1/favorites")
+        .send(body)
+
+      expect(res.statusCode).toBe(201);
+
+      expect(res.body).toHaveProperty('title');
+      expect(res.body.title).toBe("Don't Stop Me Now");
+
+      expect(res.body).toHaveProperty('artistName');
+      expect(res.body.artistName).toBe('Queen');
+
+      expect(res.body).toHaveProperty('genre');
+      expect(res.body.genre).toBe('Pop/Rock');
+
+      expect(res.body).toHaveProperty('rating');
+      expect(res.body.rating).toBe(82)
+    });
+
+    it('sad path favorite already added', async () => {
+      const body = {
+        "title": "We Will Rock You",
+        "artistName": "Queen"
+      }
+
+      const res = await request(app)
+        .post("/api/v1/favorites")
+        .send(body)
+
+      expect(res.statusCode).toBe(201);
+
+      const res2 = await request(app)
+        .post("/api/v1/favorites")
+        .send(body)
+
+      expect(res2.statusCode).toBe(400);
+      expect(res2.body.message).toBe("You have already favorited We Will Rock You by Queen!");
+    });
+
+    it('sad path no song matches', async () => {
+      const body = {
+        "title": "fred",
+        "artistName": "Queen"
+      }
+
+      const res = await request(app)
+        .post("/api/v1/favorites")
+        .send(body)
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe("No songs found matching that title and artist. Try again!");
+    });
+  });
 });
