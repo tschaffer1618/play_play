@@ -145,7 +145,7 @@ describe('Test the favorites path', () => {
       expect(res.body.genre).toBe('Pop/Rock');
 
       expect(res.body).toHaveProperty('rating');
-      expect(res.body.rating).toBe(82)
+      expect(res.body.rating).toBe(83)
     });
 
     it('happy path without genre', async () => {
