@@ -88,4 +88,31 @@ describe('Test the favorites path', () => {
       expect(res.body.error).toBe("Song not found");
     });
   });
+
+  describe('test favorite song POST', () => {
+    it('happy path', async () => {
+      const body = {
+        "title": "Don't Stop Me Now",
+        "artistName": "Queen"
+      }
+      const res = await request(app)
+        .post("/api/v1/favorites")
+        .send(body)
+
+      expect(res.statusCode).toBe(201);
+      console.log(res.body)
+
+      expect(res.body).toHaveProperty('title');
+      expect(res.body.title).toBe("Don't Stop Me Now");
+
+      expect(res.body).toHaveProperty('artistName');
+      expect(res.body.artistName).toBe('Queen');
+
+      expect(res.body).toHaveProperty('genre');
+      expect(res.body.genre).toBe('Pop/Rock');
+
+      expect(res.body).toHaveProperty('rating');
+      expect(res.body.rating).toBe(83)
+    });
+  });
 });
