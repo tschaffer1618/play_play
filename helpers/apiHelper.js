@@ -10,12 +10,21 @@ async function apiSong(title, artist) {
       error: "No songs found matching that title and artist. Try again!"
     }
   } else {
-    return {
-      "title": json_response.message.body.track.track_name,
-      "artistName": json_response.message.body.track.artist_name,
-      "genre": json_response.message.body.track.primary_genres.music_genre_list[0].music_genre.music_genre_name,
-      "rating": json_response.message.body.track.track_rating
-    };
+    if (json_response.message.body.track.primary_genres.music_genre_list.length === 0) {
+      return {
+        "title": json_response.message.body.track.track_name,
+        "artistName": json_response.message.body.track.artist_name,
+        "genre": "Unknown",
+        "rating": json_response.message.body.track.track_rating
+      };
+    } else {
+      return {
+        "title": json_response.message.body.track.track_name,
+        "artistName": json_response.message.body.track.artist_name,
+        "genre": json_response.message.body.track.primary_genres.music_genre_list[0].music_genre.music_genre_name,
+        "rating": json_response.message.body.track.track_rating
+      };
+    }
   }
 }
 
