@@ -9,6 +9,7 @@ const configuration = require('./knexfile')[environment];
 
 var indexRouter = require('./routes/index');
 var favoriteSongsRouter = require('./routes/api/v1/favoriteSongs');
+var playlistsRouter = require('./routes/api/v1/playlists');
 
 var app = express();
 
@@ -23,5 +24,6 @@ app.use('/api/v1/favorites', favoriteSongsRouter.getFavoriteSong);
 app.use('/api/v1/favorites', favoriteSongsRouter.getAllFavoriteSongs);
 app.use('/api/v1/favorites', favoriteSongsRouter.deleteFavoriteSong);
 app.use('/api/v1/favorites', favoriteSongsRouter.createFavoriteSong);
+app.use('/api/v1/playlists', playlistsRouter.deletePlaylist);
 
 module.exports = app;
