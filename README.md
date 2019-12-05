@@ -3,24 +3,20 @@
 ## Introduction
 Play Play is an Express node.js RESTful API that returns detailed song data. A user can favorite songs and delete favorited songs.
 
-## Contributors
-Play Play was written by Tyler Schaffer and Leiya Kenney as a Back End Mod 4 project at Turing School of Software and Design.
-
 ## Local Setup
-1. Fork and clone down this repo
-2. Install all dependences by navigating to the root directory in your terminal and running `npm install`
-3. Run `psql` in your terminal and run `CREATE DATABASE favorite_songs_dev` to create your PostgreSQL database
-4. Run table migrations with `knex migrate:latest`
-5. Seed the database with `knex seed:run`
+1. You will need Node to run this program - if you need to install it, [click here](https://nodejs.org/en/)!
+2. Fork and clone down this repo
+3. Install all dependences by navigating to the root directory in your terminal and running `npm install`
+4. Run `psql` in your terminal and run `CREATE DATABASE favorite_songs_dev` to create your PostgreSQL database
+5. Run table migrations with `knex migrate:latest`
+6. Seed the database with `knex seed:run`
+
+## Testing
+- To test this app, run `npm test`
 
 ## Heroku Production Link
 - This app and its production endpoints can be accessed at https://play-play-ts-lk.herokuapp.com/
 
-## Tech Stack
-- Play Play is a node.js application built with the Express framework
-- Knex
-- PostgreSQL database
-- Production hosted on Heroku
 
 ## Endpoints
 
@@ -116,3 +112,14 @@ Play Play was written by Tyler Schaffer and Leiya Kenney as a Back End Mod 4 pro
   ```
   status: 204
   ```
+
+
+## Tech Stack
+- Play Play is a node.js application built with the Express framework
+- Knex
+- PostgreSQL database
+- Production hosted on Heroku
+
+## Contributors
+Play Play was written by Tyler Schaffer and Leiya Kenney as a Back End Mod 4 project at Turing School of Software and Design.
+

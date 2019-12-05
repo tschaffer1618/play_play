@@ -8,6 +8,7 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../../../knexfile')[environment];
 const database = require('knex')(configuration);
 
+
 const deletePlaylist = router.delete("/:id", (request, response) => {
   const playlistId = request.params.id;
 
@@ -57,7 +58,18 @@ const deletePlaylist = router.delete("/:id", (request, response) => {
 //   })
 // })
 
+const getAllPlaylists = router.get('/', (request, response) => {
+  database('playlists').select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
+    .then((playlists) => {
+      response.status(200).send(playlists);
+    })
+    .catch((error) => {
+      response.status(500).json({ error });
+    });
+});
+
 module.exports = {
-  // createPlaylist,
-  deletePlaylist
-};
+  deletePlaylist,
+  //createPlaylist,
+  getAllPlaylists
+}
