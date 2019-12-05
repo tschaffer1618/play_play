@@ -6,6 +6,8 @@ const environment = process.env.NODE_ENV || 'test';
 const configuration = require('../knexfile')[environment];
 const database = require('knex')(configuration);
 
+jest.mock('../helpers/apiHelper')
+
 describe('Test the favorites path', () => {
   beforeEach(async () => {
     await database.raw('truncate table favorite_songs cascade');
@@ -145,13 +147,13 @@ describe('Test the favorites path', () => {
       expect(res.body.genre).toBe('Pop/Rock');
 
       expect(res.body).toHaveProperty('rating');
-      expect(res.body.rating).toBe(82)
+      expect(res.body.rating).toBe(81)
     });
 
-    it('sad path favorite already added', async () => {
+    it('happy path without genre', async () => {
       const body = {
-        "title": "We Will Rock You",
-        "artistName": "Queen"
+        "title": "Under Pressure",
+        "artistName": "Vanilla Ice vs. Queen Bowie"
       }
 
       const res = await request(app)
@@ -160,12 +162,35 @@ describe('Test the favorites path', () => {
 
       expect(res.statusCode).toBe(201);
 
+      expect(res.body).toHaveProperty('title');
+      expect(res.body.title).toBe("Ice Ice Baby Under Pressure (two tracker)");
+
+      expect(res.body).toHaveProperty('artistName');
+      expect(res.body.artistName).toBe('Vanilla Ice vs. Queen & Bowie');
+
+      expect(res.body).toHaveProperty('genre');
+      expect(res.body.genre).toBe('Unknown');
+
+      expect(res.body).toHaveProperty('rating');
+      expect(res.body.rating).toBe(1)
+    });
+
+    it('sad path favorite already added', async () => {
+      const body = {
+        "title": "Don't Stop Me Now",
+        "artistName": "Queen"
+      }
+
+      const res = await request(app)
+        .post("/api/v1/favorites")
+        .send(body)
+
       const res2 = await request(app)
         .post("/api/v1/favorites")
         .send(body)
 
       expect(res2.statusCode).toBe(400);
-      expect(res2.body.message).toBe("You have already favorited We Will Rock You by Queen!");
+      expect(res2.body.message).toBe("You have already favorited Don't Stop Me Now by Queen!");
     });
 
     it('sad path no song matches', async () => {
