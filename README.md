@@ -24,11 +24,74 @@ Play Play was written by Tyler Schaffer and Leiya Kenney as a Back End Mod 4 pro
 
 ## Endpoints
 
-**1.** `GET /api/v1/favorites/:id`
-  - Summary: Returns id, title, artist name, genre, and Musixmatch rating for a specific favorited song
+**1.** `POST /api/v1/favorites`
+  - Summary: Allows user to create a favorite by passing in a song title and artist
   - Required Request Body: 
   ```
+    {
+    "title": "We Will Rock You",
+    "artistName": "Queen"
+  }
   ```
+  - Expected Successful Response: 
+  ```
+  status: 201
+
+  {
+    "id": 1,
+    "title": "We Will Rock You",
+    "artistName": "Queen"
+    "genre": "Rock",
+    "rating": 88
+  }
+  ```
+  
+  - Example unsuccessful response:
+  ```
+  status: 400
+
+  {
+    "error": "No songs found matching that title and artist. Try again!"
+  }
+  ```
+  ```
+  status: 400
+
+  {
+     "You have already favorited We Will Rock You by Queen!"
+  }
+  ```
+  
+**2.** `GET /api/v1/favorites`
+  - Summary: Returns a list of user's favorite songs
+  - Required Request Body: None
+  
+  - Expected response: 
+  ```
+  status: 200
+
+  [
+    {
+      "id": 1,
+      "title": "We Will Rock You",
+      "artistName": "Queen"
+      "genre": "Rock",
+      "rating": 88
+    },
+    {
+      "id": 2,
+      "title": "Careless Whisper",
+      "artistName": "George Michael"
+      "genre": "Pop",
+      "rating": 93
+    },
+  ]
+  ```
+
+**3.** `GET /api/v1/favorites/:id`
+  - Summary: Returns id, title, artist name, genre, and Musixmatch rating for a specific favorited song
+  - Required Request Body: None
+
   - Expected Response:
   ```
   [
@@ -41,7 +104,7 @@ Play Play was written by Tyler Schaffer and Leiya Kenney as a Back End Mod 4 pro
     }
   ]
   ```
-**2.** `DELETE /api/v1/favorites/:id`
+**4.** `DELETE /api/v1/favorites/:id`
   - Summary: Deletes the favorited song with the specified id
   - Required Request Body: 
    ```
