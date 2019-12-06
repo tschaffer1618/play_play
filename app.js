@@ -25,8 +25,9 @@ app.use('/api/v1/favorites', favoriteSongsRouter.getAllFavoriteSongs);
 app.use('/api/v1/favorites', favoriteSongsRouter.deleteFavoriteSong);
 app.use('/api/v1/favorites', favoriteSongsRouter.createFavoriteSong);
 
-app.use('/api/v1/playlists', playlistsRouter.deletePlaylist);
 app.use('/api/v1/playlists', playlistsRouter.getAllPlaylists);
 app.use('/api/v1/playlists', playlistsRouter.editPlaylist);
+app.use('/api/v1/playlists', playlistsRouter.deletePlaylist);
+app.use('/api/v1/playlists', playlistsRouter.createPlaylist);
 
 module.exports = app;
