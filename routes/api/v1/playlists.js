@@ -25,38 +25,32 @@ const deletePlaylist = router.delete("/:id", (request, response) => {
     });
 });
 
-// const createPlaylist = router.post("/", (request, response) => {
-//   console.log(request.body)
-//   const title = request.body.title;
-//
-//   for (let requiredParameter of ["playlistTitle"]) {
-//     if (!request.body[requiredParameter]) {
-//       return response.status(422).send({
-//         error: "Please enter a valid title"
-//       });
-//     }
-//   }
-//
-//   (playlist => {
-//     if (playlist.error){
-//     response.status(400).send(playlist)
-//   } else {
-//     database("playlists").where({title: playlist.title})
-//       .then(existingFavorite => {
-//         if (existingFavorite[0]) {
-//           response.status(400).json({message: `You already have a playlist called ${playlist.title}!`})
-//         } else {
-//           database("playlists").insert({title: playlist.title})
-//             .then(newPlaylist => {
-//               response.status(201).json(newPlaylist)[0]
-//             })
-//           }
-//         })
-//         .catch(error => {response.status(500).json ({ error });
-//       })
-//     }
-//   })
-// })
+const createPlaylist = router.post("/", (request, response) => {
+  const title = request.body.playlistTitle;
+
+  for (let requiredParameter of ["playlistTitle"]) {
+    if (!request.body[requiredParameter]) {
+      return response.status(422).send({
+        error: "Please enter a valid title"
+      });
+    }
+  }
+
+  database("playlists").where({title: title})
+    .then(existingPlaylist => {
+      if (existingPlaylist[0]) {
+        response.status(400).json({ message: `You already have a playlist called ${title}!`})
+      } else {
+        database("playlists").insert({title: title})
+        .returning(['id', 'title', 'created_at as createdAt', 'updated_at as updatedAt'])
+        .then(newPlaylist => {
+          response.status(201).json(newPlaylist)
+        })
+      }
+    })
+    .catch(error => {response.status(500).json({ error });
+  });
+})
 
 const getAllPlaylists = router.get('/', (request, response) => {
   database('playlists').select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
@@ -70,6 +64,6 @@ const getAllPlaylists = router.get('/', (request, response) => {
 
 module.exports = {
   deletePlaylist,
-  //createPlaylist,
+  createPlaylist,
   getAllPlaylists
 }
