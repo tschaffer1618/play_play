@@ -64,21 +64,18 @@ const getAllPlaylists = router.get('/', (request, response) => {
 
 const editPlaylist = router.put('/:id', (request, response) => {
   const playlistId = request.params.id;
-  const newTitle = request.body.title;
+  const newTitle = request.body.playlistTitle;
   database('playlists').where({title: `${newTitle}`})
     .then((duplicatePlaylist) => {
       if (duplicatePlaylist[0]) {
-        response.status(400).send({error: `You already have a playlist called ${newTitle}.`})
+        response.status(400).send({message: `You already have a playlist called ${newTitle}!`})
       } else {
         database('playlists').where({id: `${playlistId}`})
           .then((playlist) => {
             if (playlist[0]) {
-              database('playlists').where({id: `${playlistId}`}).update({title: `${newTitle}`})
+              database('playlists').where({id: `${playlistId}`}).update({title: `${newTitle}`}).returning(['id', 'title', 'created_at as createdAt', 'updated_at as updatedAt'])
                 .then((updatedPlaylist) => {
-                  database('playlists').where({id: `${playlistId}`}).select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
-                    .then((playlistToSend) => {
-                      response.status(200).json(playlistToSend[0])
-                    })
+                  response.status(200).json(updatedPlaylist[0])
                 })
             } else {
               response.status(404).send({error: 'No playlist found matching that id. Try again!'})
