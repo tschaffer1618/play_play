@@ -38,11 +38,11 @@ const createPlaylist = router.post("/", (request, response) => {
 
   database("playlists").where({title: title})
     .then(existingPlaylist => {
-      console.log(title)
       if (existingPlaylist[0]) {
         response.status(400).json({ message: `You already have a playlist called ${title}!`})
       } else {
         database("playlists").insert({title: title})
+        .returning(['id', 'title', 'created_at as createdAt', 'updated_at as updatedAt'])
         .then(newPlaylist => {
           response.status(201).json(newPlaylist)
         })
