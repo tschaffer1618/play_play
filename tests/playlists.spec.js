@@ -74,5 +74,38 @@ describe('Test the playlists path', () => {
       expect(res.body[1]).toHaveProperty('updatedAt');
     });
   });
-})
 
+  describe('test playlist POST', () => {
+    it('can create a playlist', async () => {
+      const body = {
+        "playlistTitle": "Party"
+      }
+
+      const res = await request(app)
+        .post("/api/v1/playlists")
+        .send(body)
+
+      expect(res.statusCode).toBe(201);
+
+      expect(res.body[0]).toHaveProperty('title');
+      expect(res.body[0].title).toBe("Party");
+    });
+
+    it("can't create a playlist that's already been created", async () => {
+      const body = {
+        "playlistTitle": "Party"
+      }
+
+      const res = await request(app)
+        .post("/api/v1/playlists")
+        .send(body)
+
+      const res2 = await request(app)
+        .post("/api/v1/playlists")
+        .send(body)
+
+      expect(res2.statusCode).toBe(400);
+      expect(res2.body.message).toBe("You already have a playlist called Party!")
+    })
+  });
+})
