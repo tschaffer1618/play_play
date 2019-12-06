@@ -97,5 +97,6 @@ const editPlaylist = router.put('/:id', (request, response) => {
 module.exports = {
   deletePlaylist,
   //createPlaylist,
-  getAllPlaylists
+  getAllPlaylists,
+  editPlaylist
 }
