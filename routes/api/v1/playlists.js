@@ -52,9 +52,13 @@ const createPlaylist = router.post("/", (request, response) => {
   });
 })
 
+// function getPlaylistFavorites(playlistId) {
+//   return database('playlist_songs').where({ playlist_id: playlistId })
+// }
+
 const getPlaylist = router.get('/:id/favorites', (request, response) => {
   const playlistId = request.params.id
-  database('playlists').where({ id: playlistId }).select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
+  database('playlists').join('playlist_songs', 'playlists.id', '=', 'playlist_songs.playlist_id').where("playlists.id", playlistId ).select('playlists.id', 'title', 'playlist_songs.id', 'playlists.created_at as createdAt', 'playlists.updated_at as updatedAt')
     .then((playlist) => {
       response.status(200).send(playlist);
     })
