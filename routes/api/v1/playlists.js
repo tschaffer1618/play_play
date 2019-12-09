@@ -67,7 +67,7 @@ const getPlaylist = router.get('/:id/favorites', async (request, response) => {
 });
 
 const getAllPlaylists = router.get('/', (request, response) => {
-  database('playlists').select('id', 'title', 'created_at', 'updated_at')
+  database('playlists').select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
     .then((playlists) => {
       response.status(200).send(playlists);
     })
