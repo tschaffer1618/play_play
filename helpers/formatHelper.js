@@ -1,3 +1,5 @@
+var mathHelper = require("./mathHelper");
+
 function formatSong(song) {
   var formattedSong = [{
     id: song[0].id,
@@ -13,6 +15,8 @@ function formatPlaylist(playlist, favorites) {
   return {
     id: playlist[0].id,
     title: playlist[0].title,
+    songCount: favorites.length,
+    songAvgRating: mathHelper.calculateAvgRating(favorites),
     favorites: favorites,
     createdAt: playlist[0].createdAt,
     updatedAt: playlist[0].updatedAt
