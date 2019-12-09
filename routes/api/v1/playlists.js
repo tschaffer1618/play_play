@@ -3,6 +3,7 @@ var router = express.Router();
 
 var formatHelper = require("../../../helpers/formatHelper");
 var apiHelper = require("../../../helpers/apiHelper");
+var databaseHelper = require("../../../helpers/databaseHelper");
 
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../../../knexfile')[environment];
@@ -52,15 +53,13 @@ const createPlaylist = router.post("/", (request, response) => {
   });
 })
 
-// function getPlaylistFavorites(playlistId) {
-//   return database('playlist_songs').where({ playlist_id: playlistId })
-// }
 
-const getPlaylist = router.get('/:id/favorites', (request, response) => {
+const getPlaylist = router.get('/:id/favorites', async (request, response) => {
   const playlistId = request.params.id
+  const favorites = await databaseHelper.getPlaylistFavorites(playlistId);
   database('playlists').join('playlist_songs', 'playlists.id', '=', 'playlist_songs.playlist_id').where("playlists.id", playlistId ).select('playlists.id', 'title', 'playlist_songs.id', 'playlists.created_at as createdAt', 'playlists.updated_at as updatedAt')
     .then((playlist) => {
-      response.status(200).send(playlist);
+      response.status(200).send(formatHelper.formatPlaylist(playlist, favorites));
     })
     .catch((error) => {
       response.status(500).json({ error });
@@ -68,7 +67,7 @@ const getPlaylist = router.get('/:id/favorites', (request, response) => {
 });
 
 const getAllPlaylists = router.get('/', (request, response) => {
-  database('playlists').select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
+  database('playlists').select('id', 'title', 'created_at', 'updated_at')
     .then((playlists) => {
       response.status(200).send(playlists);
     })

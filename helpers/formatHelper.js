@@ -9,6 +9,17 @@ function formatSong(song) {
   return formattedSong;
 }
 
+function formatPlaylist(playlist, favorites) {
+  return {
+    id: playlist[0].id,
+    title: playlist[0].title,
+    favorites: favorites,
+    createdAt: playlist[0].createdAt,
+    updatedAt: playlist[0].updatedAt
+  }
+}
+
 module.exports = {
-  formatSong
+  formatSong,
+  formatPlaylist
 }
