@@ -52,6 +52,17 @@ const createPlaylist = router.post("/", (request, response) => {
   });
 })
 
+const getPlaylist = router.get('/:id/favorites', (request, response) => {
+  const playlistId = request.params.id
+  database('playlists').where({ id: playlistId }).select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
+    .then((playlist) => {
+      response.status(200).send(playlist);
+    })
+    .catch((error) => {
+      response.status(500).json({ error });
+    });
+});
+
 const getAllPlaylists = router.get('/', (request, response) => {
   database('playlists').select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
     .then((playlists) => {
@@ -89,5 +100,6 @@ module.exports = {
   deletePlaylist,
   getAllPlaylists,
   editPlaylist,
-  createPlaylist
+  createPlaylist,
+  getPlaylist
 }
