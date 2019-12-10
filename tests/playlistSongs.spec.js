@@ -44,7 +44,6 @@ describe('Test creating playlist_songs', () => {
       const res = await request(app)
         .post(`/api/v1/playlists/${playlistId}/favorites/${favoriteId}`);
 
-      console.log(res)
       expect(res.statusCode).toBe(201);
 
       expect(res.body).toHaveProperty('success');
