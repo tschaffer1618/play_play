@@ -41,6 +41,38 @@ const createPlaylistSong = router.post("/:id/favorites/:favoriteId", (request, r
     })
 })
 
+const deletePlaylistSong = router.delete("/:id/favorites/:favoriteId", (request, response) => {
+  const playlistId = request.params.id;
+  const songId = request.params.favoriteId;
+
+  database("playlist_songs").where("song_id", songId)
+    .then(favorite => {
+      if (favorite[0]) {
+        database("playlists").where({id: playlistId})
+          .then(playlist => {
+            if (playlist[0]) {
+              database("playlist_songs").where({ song_id: songId, playlist_id: playlistId })
+                .then(fav => {
+                  if (fav[0]) {
+                    database("playlist_songs").del().where({ song_id: songId, playlist_id: playlistId })
+                    .then(fav => {
+                      response.status(204).send()
+                    })
+                  } else {
+                    return response.status(404).json({ error: "That song isn't in that playlist. Try again!"})
+                  }
+                })
+            } else {
+              return response.status(404).json({ error: "No playlist found matching that ID. Try again!"})
+            }
+          })
+      } else {
+        return response.status(404).json({ error: "No song found matching that ID. Try again!"})
+      }
+    })
+})
+
 module.exports = {
-  createPlaylistSong
+  createPlaylistSong,
+  deletePlaylistSong
 }
