@@ -48,12 +48,19 @@ const deletePlaylistSong = router.delete("/:id/favorites/:favoriteId", (request,
   database("playlist_songs").where("song_id", songId)
     .then(favorite => {
       if (favorite[0]) {
-        database("playlist_songs").del().where({ song_id: songId })
-          .then(favorite => {
-            response.status(204).send()
-          });
+        database("playlists").where({id: playlistId})
+          .then(playlist => {
+            if (playlist[0]) {
+              database("playlist_songs").del().where({ song_id: songId, playlist_id: playlistId })
+              .then(favorite => {
+                response.status(204).send()
+              });
+            } else {
+              return response.status(404).json({ error: "No playlist found matching that id. Try again!"})
+            }
+          })
       } else {
-        return response.status(404).json({ error: "No song/playlist found matching that id. Try again!"})
+        return response.status(404).json({ error: "No song found matching that id. Try again!"})
       }
     })
 })
