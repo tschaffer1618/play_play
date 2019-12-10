@@ -12,15 +12,28 @@ function formatSong(song) {
 }
 
 function formatPlaylist(playlist, favorites) {
-  return {
-    id: playlist[0].id,
-    title: playlist[0].title,
-    songCount: favorites.length,
-    songAvgRating: mathHelper.calculateAvgRating(favorites),
-    favorites: favorites,
-    createdAt: playlist[0].createdAt,
-    updatedAt: playlist[0].updatedAt
+  if (favorites.length > 0) {
+    var formattedPlaylist = {
+      id: playlist[0].id,
+      title: playlist[0].title,
+      songCount: favorites.length,
+      songAvgRating: mathHelper.calculateAvgRating(favorites),
+      favorites: favorites,
+      createdAt: playlist[0].createdAt,
+      updatedAt: playlist[0].updatedAt
+    }
+  } else {
+    var formattedPlaylist = {
+      id: playlist[0].id,
+      title: playlist[0].title,
+      songCount: 0,
+      songAvgRating: 0,
+      favorites: favorites,
+      createdAt: playlist[0].createdAt,
+      updatedAt: playlist[0].updatedAt
+    }
   }
+  return formattedPlaylist;
 }
 
 module.exports = {

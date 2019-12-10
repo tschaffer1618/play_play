@@ -53,17 +53,25 @@ const createPlaylist = router.post("/", (request, response) => {
   });
 })
 
-
 const getPlaylist = router.get('/:id/favorites', async (request, response) => {
   const playlistId = request.params.id
   const favorites = await databaseHelper.getPlaylistFavorites(playlistId);
-  database('playlists').join('playlist_songs', 'playlists.id', '=', 'playlist_songs.playlist_id').where("playlists.id", playlistId ).select('playlists.id', 'title', 'playlist_songs.id', 'playlists.created_at as createdAt', 'playlists.updated_at as updatedAt')
-    .then((playlist) => {
-      response.status(200).send(formatHelper.formatPlaylist(playlist, favorites));
+  database('playlists').where({id: playlistId}).select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
+    .then(existingPlaylist => {
+      if (existingPlaylist[0] && favorites[0]) {
+        database('playlists').innerJoin('playlist_songs', 'playlists.id', 'playlist_songs.playlist_id').where("playlists.id", playlistId ).select('playlists.id', 'title', 'playlists.created_at as createdAt', 'playlists.updated_at as updatedAt')
+          .then((playlist) => {
+            response.status(200).send(formatHelper.formatPlaylist(playlist, favorites));
+          })
+          .catch((error) => {
+            response.status(500).json({ error });
+          });
+      } else if (existingPlaylist[0]) {
+        response.status(200).send(formatHelper.formatPlaylist(existingPlaylist, favorites));
+      } else {
+        response.status(404).json({error: "No playlist found matching that ID. Try again!"})
+      }
     })
-    .catch((error) => {
-      response.status(500).json({ error });
-    });
 });
 
 const getAllPlaylists = router.get('/', (request, response) => {
