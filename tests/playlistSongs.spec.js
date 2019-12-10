@@ -104,3 +104,119 @@ describe('Test creating playlist_songs', () => {
     })
   });
 })
+
+describe('Test deleting playlist_songs from specified playlist only', () => {
+  beforeEach(async () => {
+    await database.raw('truncate table playlists cascade');
+    await database.raw('truncate table favorite_songs cascade');
+
+    const playlist = {
+      title: 'Test Playlist'
+    };
+
+    const playlist2 = {
+      title: 'Other One'
+    };
+
+    const favorite = {
+      title: 'I Will Not Bow',
+      artist_name: 'Breaking Benjamin',
+      genre: 'Rock',
+      rating: 68
+    };
+
+    const favorite2 = {
+      title: 'Walking Contradiction',
+      artist_name: 'Green Day',
+      genre: 'Alternative',
+      rating: 34
+    };
+
+    await database('playlists').insert(playlist, 'id');
+    await database('playlists').insert(playlist2, 'id');
+    await database('favorite_songs').insert(favorite, 'id');
+    await database('favorite_songs').insert(favorite2, 'id');
+  });
+
+  afterEach(() => {
+    database.raw('truncate table playlists cascade');
+    database.raw('truncate table favorite_songs cascade');
+  });
+
+  describe('test playlist_songs DELETE', () => {
+    it('can delete a playlist_song', async () => {
+      const playlist = await database('playlists')
+        .where('title', 'Test Playlist').select('id');
+      const playlistId = playlist[0].id;
+
+      const favorite = await database('favorite_songs')
+        .where('title', 'I Will Not Bow').select('id');
+      const favoriteId = favorite[0].id;
+
+      const res = await request(app)
+        .post(`/api/v1/playlists/${playlistId}/favorites/${favoriteId}`);
+
+      const del = await request(app)
+        .delete(`/api/v1/playlists/${playlistId}/favorites/${favoriteId}`);
+
+      expect(del.statusCode).toBe(204);
+    });
+
+    it("can't delete a playlist_song that doesn't exist as a favorite", async () => {
+      const playlist = await database('playlists')
+        .where('title', 'Test Playlist').select('id');
+        const playlistId = playlist[0]
+
+      const favorite = await database('favorite_songs')
+        .where('title', 'I Will Not Bow').select('id');
+      const favoriteId = favorite[0].id;
+      const wrongSong = favoriteId + 10;
+
+      const res = await request(app)
+        .delete(`/api/v1/playlists/${playlistId}/favorites/${wrongSong}`);
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.error).toBe("No song found matching that ID. Try again!");
+    })
+
+    it("can't delete a playlist_song from a playlist that doesn't exist", async () => {
+      const playlist = await database('playlists')
+        .where('title', 'Test Playlist').select('id');
+        const playlistId = playlist[0];
+
+      const favorite = await database('favorite_songs')
+        .where('title', 'I Will Not Bow').select('id');
+      const favoriteId = favorite[0].id;
+
+      const res = await request(app)
+        .delete(`/api/v1/playlists/12345/favorites/${favoriteId}`);
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.error).toBe("No song found matching that ID. Try again!");
+    })
+
+    it("can't delete a playlist_song unless that song is in the specified playlist", async () => {
+      const playlist = await database('playlists')
+        .where('title', 'Test Playlist').select('id');
+        const playlistId = playlist[0].id;
+
+      const playlist2 = await database('playlists')
+        .where('title', 'Other One').select('id');
+        const playlist2Id = playlist2[0].id;
+
+      const favorite = await database('favorite_songs')
+        .where('title', 'I Will Not Bow').select('id');
+      const favoriteId = favorite[0].id;
+
+      const res = await request(app)
+        .post(`/api/v1/playlists/${playlistId}/favorites/${favoriteId}`);
+
+      const nope = await request(app)
+        .delete(`/api/v1/playlists/${playlist2Id}/favorites/${favoriteId}`);
+
+      expect(nope.statusCode).toBe(404);
+      expect(nope.body.error).toBe("That song isn't in that playlist. Try again!");
+    })
+
+  });
+})
