@@ -74,14 +74,10 @@ const getPlaylist = router.get('/:id/favorites', async (request, response) => {
     })
 });
 
-const getAllPlaylists = router.get('/', (request, response) => {
-  database('playlists').select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
-    .then((playlists) => {
-      response.status(200).send(playlists);
-    })
-    .catch((error) => {
-      response.status(500).json({ error });
-    });
+const getAllPlaylists = router.get('/', async (request, response) => {
+  const playlists = await database('playlists').select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
+  const final = await formatHelper.getAllFavorites(playlists);
+  response.status(200).send(final);
 });
 
 const editPlaylist = router.put('/:id', (request, response) => {

@@ -1,4 +1,6 @@
 var mathHelper = require("./mathHelper");
+var databaseHelper = require("./databaseHelper");
+
 
 function formatSong(song) {
   var formattedSong = [{
@@ -36,7 +38,18 @@ function formatPlaylist(playlist, favorites) {
   return formattedPlaylist;
 }
 
+async function getAllFavorites(playlists) {
+  var finalArray = await Promise.all(playlists.map(async (playlist) => {
+    var playlistId = await playlist.id;
+    var favorites = await databaseHelper.getPlaylistFavorites(playlistId);
+    var formattedPlaylist = await formatPlaylist([playlist], favorites);
+    return formattedPlaylist;
+  }));
+  return finalArray;
+}
+
 module.exports = {
   formatSong,
-  formatPlaylist
+  formatPlaylist,
+  getAllFavorites
 }
