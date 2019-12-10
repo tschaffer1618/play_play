@@ -179,24 +179,16 @@ describe('Test the playlists path', () => {
     });
 
     it('sad path', async () => {
+      const playlist = await database('playlists')
+        .where('title', 'Test Playlist').select('id');
+      const playlistId = playlist[0].id;
+      const wrongId = playlistId + 10;
+
       const res = await request(app)
-        .get(`/api/v1/playlists`);
+        .get(`/api/v1/playlists/${wrongId}/favorites`);
 
-      expect(res.statusCode).toBe(200);
-      expect(res.body.length).toBe(2);
-
-      expect(res.body[0]).toHaveProperty('id');
-      expect(res.body[1]).toHaveProperty('id');
-
-      expect(res.body[0]).toHaveProperty('title');
-      expect(res.body[0].title).toBe('Test Playlist');
-      expect(res.body[1].title).toBe('Other Test Playlist');
-
-      expect(res.body[0]).toHaveProperty('createdAt');
-      expect(res.body[1]).toHaveProperty('createdAt');
-
-      expect(res.body[0]).toHaveProperty('updatedAt');
-      expect(res.body[1]).toHaveProperty('updatedAt');
+        expect(res.statusCode).toBe(404);
+        expect(res.body.error).toBe("No playlist found matching that ID. Try again!")
     });
   });
 
