@@ -33,5 +33,6 @@ app.use('/api/v1/playlists', playlistsRouter.createPlaylist);
 app.use('/api/v1/playlists', playlistsRouter.getPlaylist);
 
 app.use('/api/v1/playlists', playlistSongsRouter.createPlaylistSong);
+app.use('/api/v1/playlists', playlistSongsRouter.deletePlaylistSong);
 
 module.exports = app;
