@@ -10,6 +10,7 @@ describe('Test creating playlist_songs', () => {
   beforeEach(async () => {
     await database.raw('truncate table playlists cascade');
     await database.raw('truncate table favorite_songs cascade');
+    await database.raw('truncate table playlist_songs cascade');
 
     const playlist = {
       title: 'Test Playlist'
@@ -29,6 +30,7 @@ describe('Test creating playlist_songs', () => {
   afterEach(() => {
     database.raw('truncate table playlists cascade');
     database.raw('truncate table favorite_songs cascade');
+    database.raw('truncate table playlist_songs cascade');
   });
 
   describe('test playlist_songs POST', () => {
@@ -102,5 +104,55 @@ describe('Test creating playlist_songs', () => {
       expect(res.statusCode).toBe(404);
       expect(res.body.error).toBe("No song found matching that ID. Try again!")
     })
+  });
+
+  describe('test playlist_songs dependencies', () => {
+    it('deletes playlist_songs when their playlist is deleted', async () => {
+      const playlist = await database('playlists')
+        .where('title', 'Test Playlist').select('id');
+      const playlistId = playlist[0].id;
+
+      const favorite = await database('favorite_songs')
+        .where('title', 'I Will Not Bow').select('id');
+      const favoriteId = favorite[0].id;
+
+      await request(app)
+        .post(`/api/v1/playlists/${playlistId}/favorites/${favoriteId}`);
+
+      const playlistSong = await database('playlist_songs').where({song_id: favoriteId, playlist_id: playlistId})
+
+      expect(playlistSong.length).toBe(1);
+
+      await request(app)
+        .delete(`/api/v1/playlists/${playlistId}`);
+
+      const deletedPlaylistSong = await database('playlist_songs').where({song_id: favoriteId, playlist_id: playlistId})
+
+      expect(deletedPlaylistSong.length).toBe(0);
+    });
+
+    it('deletes playlist_songs when their song is deleted', async () => {
+      const playlist = await database('playlists')
+        .where('title', 'Test Playlist').select('id');
+      const playlistId = playlist[0].id;
+
+      const favorite = await database('favorite_songs')
+        .where('title', 'I Will Not Bow').select('id');
+      const favoriteId = favorite[0].id;
+
+      await request(app)
+        .post(`/api/v1/playlists/${playlistId}/favorites/${favoriteId}`);
+
+      const playlistSong = await database('playlist_songs').where({song_id: favoriteId, playlist_id: playlistId})
+
+      expect(playlistSong.length).toBe(1);
+
+      await request(app)
+        .delete(`/api/v1/favorites/${favoriteId}`);
+
+      const deletedPlaylistSong = await database('playlist_songs').where({song_id: favoriteId, playlist_id: playlistId})
+
+      expect(deletedPlaylistSong.length).toBe(0);
+    });
   });
 })
