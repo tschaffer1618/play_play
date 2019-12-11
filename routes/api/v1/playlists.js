@@ -9,17 +9,6 @@ const environment = process.env.NODE_ENV || "development";
 const configuration = require("../../../knexfile")[environment];
 const database = require("knex")(configuration);
 
-const deletePlaylist = router.delete("/:id", async (request, response) => {
-  const playlistId = request.params.id;
-  const playlist = await database("playlists").where({id: playlistId})
-  if (playlist[0]) {
-    await database("playlists").del().where({id: playlistId});
-    response.status(204).send();
-  } else {
-    response.status(404).json({ error: "Playlist not found" });
-  }
-});
-
 const createPlaylist = router.post("/", async (request, response) => {
   const title = request.body.playlistTitle;
   for (let requiredParameter of ["playlistTitle"]) {
@@ -64,30 +53,38 @@ const getAllPlaylists = router.get("/", async (request, response) => {
 const editPlaylist = router.put("/:id", async (request, response) => {
   const playlistId = request.params.id;
   const newTitle = request.body.playlistTitle;
-  database("playlists").where({title: `${newTitle}`})
-    .then((duplicatePlaylist) => {
-      if (duplicatePlaylist[0]) {
-        response.status(400).send({message: `You already have a playlist called ${newTitle}!`})
-      } else {
-        database("playlists").where({id: `${playlistId}`})
-          .then((playlist) => {
-            if (playlist[0]) {
-              database("playlists").where({id: `${playlistId}`}).update({title: `${newTitle}`}).returning(["id", "title", "created_at as createdAt", "updated_at as updatedAt"])
-                .then((updatedPlaylist) => {
-                  response.status(200).json(updatedPlaylist[0])
-                })
-            } else {
-              response.status(404).send({error: "No playlist found matching that id. Try again!"})
-            }
-          })
-      }
-    })
-})
+  const duplicatePlaylist = await database("playlists").where({title: `${newTitle}`})
+  if (duplicatePlaylist[0]) {
+    response.status(400).send({message: `You already have a playlist called ${newTitle}!`})
+  } else {
+    const playlist = await database("playlists").where({id: `${playlistId}`});
+    if (playlist[0]) {
+      const updatedPlaylist = await database("playlists").where({id: `${playlistId}`})
+        .update({title: `${newTitle}`})
+        .returning(["id", "title", "created_at as createdAt", "updated_at as updatedAt"]);
+      response.status(200).json(updatedPlaylist[0]);
+    } else {
+      response.status(404).send({error: "No playlist found matching that id. Try again!"})
+    };
+  };
+});
+
+const deletePlaylist = router.delete("/:id", async (request, response) => {
+  const playlistId = request.params.id;
+  const playlist = await database("playlists").where({id: playlistId})
+  if (playlist[0]) {
+    await database("playlists").del().where({id: playlistId});
+    response.status(204).send();
+  } else {
+    response.status(404).json({ error: "Playlist not found" });
+  }
+});
+
 
 module.exports = {
-  deletePlaylist,
+  createPlaylist,
+  getPlaylist,
   getAllPlaylists,
   editPlaylist,
-  createPlaylist,
-  getPlaylist
+  deletePlaylist
 }
