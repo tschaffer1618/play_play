@@ -20,32 +20,22 @@ const deletePlaylist = router.delete("/:id", async (request, response) => {
   }
 });
 
-const createPlaylist = router.post("/", (request, response) => {
+const createPlaylist = router.post("/", async (request, response) => {
   const title = request.body.playlistTitle;
-
   for (let requiredParameter of ["playlistTitle"]) {
     if (!request.body[requiredParameter]) {
-      return response.status(422).send({
-        error: "Please enter a valid title"
-      });
+      return response.status(422).send({error: "Please enter a valid title"});
     }
   }
-
-  database("playlists").where({title: title})
-    .then(existingPlaylist => {
-      if (existingPlaylist[0]) {
-        response.status(400).json({ message: `You already have a playlist called ${title}!`})
-      } else {
-        database("playlists").insert({title: title})
-        .returning(['id', 'title', 'created_at as createdAt', 'updated_at as updatedAt'])
-        .then(newPlaylist => {
-          response.status(201).json(newPlaylist)
-        })
-      }
-    })
-    .catch(error => {response.status(500).json({ error });
-  });
-})
+  const duplicatePlaylist = await database("playlists").where({title: title});
+  if (duplicatePlaylist[0]) {
+    response.status(400).json({ message: `You already have a playlist called ${title}!`});
+  } else {
+    const newPlaylist = await database("playlists").insert({title: title})
+      .returning(['id', 'title', 'created_at as createdAt', 'updated_at as updatedAt']);
+    response.status(201).json(newPlaylist);
+  }
+});
 
 const getPlaylist = router.get('/:id/favorites', async (request, response) => {
   const playlistId = request.params.id
