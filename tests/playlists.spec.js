@@ -248,7 +248,7 @@ describe("A user", () => {
     });
   });
 
-  describe("can't edit a playlist title through a PUT request")
+  describe("can't edit a playlist title through a PUT request", () => {
     it("with a duplicate title", async () => {
       const playlist = await database("playlists")
         .where("title", "Test Playlist").select("id");
@@ -312,4 +312,4 @@ describe("A user", () => {
       expect(res.body.error).toBe("Playlist not found");
     });
   });
-})
+});
