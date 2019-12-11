@@ -40,22 +40,19 @@ const createPlaylist = router.post("/", async (request, response) => {
 const getPlaylist = router.get('/:id/favorites', async (request, response) => {
   const playlistId = request.params.id
   const favorites = await databaseHelper.getPlaylistFavorites(playlistId);
-  database('playlists').where({id: playlistId}).select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
-    .then(existingPlaylist => {
-      if (existingPlaylist[0] && favorites[0]) {
-        database('playlists').innerJoin('playlist_songs', 'playlists.id', 'playlist_songs.playlist_id').where("playlists.id", playlistId ).select('playlists.id', 'title', 'playlists.created_at as createdAt', 'playlists.updated_at as updatedAt')
-          .then((playlist) => {
-            response.status(200).send(formatHelper.formatPlaylist(playlist, favorites));
-          })
-          .catch((error) => {
-            response.status(500).json({ error });
-          });
-      } else if (existingPlaylist[0]) {
-        response.status(200).send(formatHelper.formatPlaylist(existingPlaylist, favorites));
-      } else {
-        response.status(404).json({error: "No playlist found matching that ID. Try again!"})
-      }
-    })
+  const existingPlaylist =  await database('playlists').where({id: playlistId})
+    .select('id', 'title', 'created_at as createdAt', 'updated_at as updatedAt')
+  if (existingPlaylist[0] && favorites[0]) {
+    const playlist = await database('playlists')
+      .innerJoin('playlist_songs', 'playlists.id', 'playlist_songs.playlist_id')
+      .where("playlists.id", playlistId )
+      .select('playlists.id', 'title', 'playlists.created_at as createdAt', 'playlists.updated_at as updatedAt')
+    response.status(200).send(formatHelper.formatPlaylist(playlist, favorites));
+  } else if (existingPlaylist[0]) {
+    response.status(200).send(formatHelper.formatPlaylist(existingPlaylist, favorites));
+  } else {
+    response.status(404).json({error: "No playlist found matching that ID. Try again!"})
+  }
 });
 
 const getAllPlaylists = router.get('/', async (request, response) => {
