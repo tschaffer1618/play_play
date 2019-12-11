@@ -21,7 +21,7 @@ const getFavoriteSong = router.get("/:id", async (request, response) => {
 const getAllFavoriteSongs = router.get("/", async (request, response) => {
   const favSongs = await database("favorite_songs").select("id", "title", "artist_name as artistName", "genre", "rating")
   response.status(200).send(favSongs)
-})
+});
 
 const deleteFavoriteSong = router.delete("/:id", async (request, response) => {
   const songId = request.params.id;
@@ -32,44 +32,34 @@ const deleteFavoriteSong = router.delete("/:id", async (request, response) => {
   } else {
     return response.status(404).json({ error: "Song not found" });
   }
-})
+});
 
-const createFavoriteSong = router.post("/", (request, response) => {
+const createFavoriteSong = router.post("/", async (request, response) => {
   const title = request.body.title;
   const artist = request.body.artistName;
 
   for (let requiredParameter of ["title", "artistName"]) {
     if (!request.body[requiredParameter]) {
       return response.status(422).send({
-        error: `Expeted format: { title: <String>, artistName: <String> } You're missing the "${requiredParameter}" property!`
+        error: `Expected format: { title: <String>, artistName: <String> } You're missing the "${requiredParameter}" property!`
       });
     }
   }
 
-  apiHelper.apiSong(title, artist)
-    .then(song => {
-      if (song.error){
-        response.status(400).send(song)
-      } else {
-        database("favorite_songs").where({title: song.title, artist_name: song.artistName})
-          .then(existingFavorite => {
-            if (existingFavorite[0]) {
-              response.status(400).json({ message: `You have already favorited ${song.title} by ${song.artistName}!`})
-            } else {
-              database("favorite_songs").insert({title: song.title, artist_name: song.artistName, genre: song.genre, rating: song.rating})
-              .then(dataPromise => {
-                database("favorite_songs").where({title: song.title})
-                .then(favoriteSong => {
-                  response.status(201).json(formatHelper.formatSong(favoriteSong)[0])
-                })
-              })
-            }
-          })
-          .catch(error => {response.status(500).json({ error });
-        });
-      }
-    })
-})
+  const song = await apiHelper.apiSong(title,artist)
+  if (song.error){
+    response.status(400).send(song)
+  } else {
+    const existingFavorite = await database("favorite_songs").where({title: song.title, artist_name: song.artistName})
+    if (existingFavorite[0]) {
+      response.status(400).json({ message: `You have already favorited ${song.title} by ${song.artistName}!`})
+    } else {
+      const dataPromise = await database("favorite_songs").insert({title: song.title, artist_name: song.artistName, genre: song.genre, rating: song.rating})
+      const favoriteSong = await database("favorite_songs").where({title: song.title})
+      return response.status(201).json(formatHelper.formatSong(favoriteSong)[0])
+    }
+  }
+});
 
 module.exports = {
   getFavoriteSong,
