@@ -113,6 +113,8 @@ Play Play is an Express node.js RESTful API that returns detailed song data. A u
   status: 204
   ```
 
+## Schema 
+![Database Schema](https://user-images.githubusercontent.com/48742436/70652220-24df6800-1c4a-11ea-84a9-51ca64df027c.png)
 
 ## Tech Stack
 - Play Play is a node.js application built with the Express framework
