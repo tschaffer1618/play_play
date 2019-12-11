@@ -123,7 +123,6 @@ describe ("A user", () => {
     it("with a correct song id", async () => {
       const favorite = await database("favorite_songs")
       .where("title", "I Will Not Bow").select("id");
-      console.log(favorite)
       const favoriteSongId = favorite[0].id;
       const res = await request(app)
       .get(`/api/v1/favorites/${favoriteSongId}`);
