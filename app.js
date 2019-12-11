@@ -10,6 +10,7 @@ const configuration = require('./knexfile')[environment];
 var indexRouter = require('./routes/index');
 var favoriteSongsRouter = require('./routes/api/v1/favoriteSongs');
 var playlistsRouter = require('./routes/api/v1/playlists');
+var playlistSongsRouter = require('./routes/api/v1/playlistSongs');
 
 var app = express();
 
@@ -29,5 +30,9 @@ app.use('/api/v1/playlists', playlistsRouter.getAllPlaylists);
 app.use('/api/v1/playlists', playlistsRouter.editPlaylist);
 app.use('/api/v1/playlists', playlistsRouter.deletePlaylist);
 app.use('/api/v1/playlists', playlistsRouter.createPlaylist);
+app.use('/api/v1/playlists', playlistsRouter.getPlaylist);
+
+app.use('/api/v1/playlists', playlistSongsRouter.createPlaylistSong);
+app.use('/api/v1/playlists', playlistSongsRouter.deletePlaylistSong);
 
 module.exports = app;
