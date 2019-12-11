@@ -9,21 +9,15 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../../../knexfile')[environment];
 const database = require('knex')(configuration);
 
-
-const deletePlaylist = router.delete("/:id", (request, response) => {
+const deletePlaylist = router.delete("/:id", async (request, response) => {
   const playlistId = request.params.id;
-
-  database("playlists").where("id", playlistId)
-    .then(playlist => {
-      if (playlist[0]) {
-        database("playlists").del().where({ id: playlistId })
-          .then(playlist => {
-            response.status(204).send();
-          });
-      } else {
-        return response.status(404).json({ error: "Playlist not found" });
-      }
-    });
+  const playlist = await database("playlists").where({id: playlistId})
+  if (playlist[0]) {
+    await database("playlists").del().where({id: playlistId});
+    response.status(204).send();
+  } else {
+    response.status(404).json({ error: "Playlist not found" });
+  }
 });
 
 const createPlaylist = router.post("/", (request, response) => {
