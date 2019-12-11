@@ -312,4 +312,4 @@ describe("A user", () => {
       expect(res.body.error).toBe("Playlist not found");
     });
   });
-})
+});
