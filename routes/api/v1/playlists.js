@@ -54,6 +54,11 @@ const getAllPlaylists = router.get("/", async (request, response) => {
 const editPlaylist = router.put("/:id", async (request, response) => {
   const playlistId = request.params.id;
   const newTitle = request.body.playlistTitle;
+  for (let requiredParameter of ["playlistTitle"]) {
+    if (!request.body[requiredParameter]) {
+      return response.status(422).send({error: "Please enter a valid title"});
+    };
+  };
   const duplicatePlaylist = await database("playlists").where({title: newTitle});
   if (duplicatePlaylist[0]) {
     response.status(400).send({message: `You already have a playlist called ${newTitle}!`});
