@@ -33,6 +33,92 @@ describe ("A user", () => {
     database.raw("truncate table favorite_songs cascade");
   });
 
+  describe("can POST a new favorite song", () => {
+    it("by providing the title and artistName in the body", async () => {
+      const body = {
+        "title": "Don't Stop Me Now",
+        "artistName": "Queen"
+      }
+
+      const res = await request(app)
+      .post("/api/v1/favorites")
+      .send(body)
+
+      expect(res.statusCode).toBe(201);
+
+      expect(res.body).toHaveProperty("title");
+      expect(res.body.title).toBe("Don't Stop Me Now");
+
+      expect(res.body).toHaveProperty("artistName");
+      expect(res.body.artistName).toBe("Queen");
+
+      expect(res.body).toHaveProperty("genre");
+      expect(res.body.genre).toBe("Pop/Rock");
+
+      expect(res.body).toHaveProperty("rating");
+      expect(res.body.rating).toBe(81)
+    });
+
+    it("by providing the title and artistName in the body without a genre given by the API", async () => {
+      const body = {
+        "title": "Under Pressure",
+        "artistName": "Vanilla Ice vs. Queen Bowie"
+      }
+
+      const res = await request(app)
+      .post("/api/v1/favorites")
+      .send(body)
+
+      expect(res.statusCode).toBe(201);
+
+      expect(res.body).toHaveProperty("title");
+      expect(res.body.title).toBe("Ice Ice Baby Under Pressure (two tracker)");
+
+      expect(res.body).toHaveProperty("artistName");
+      expect(res.body.artistName).toBe("Vanilla Ice vs. Queen & Bowie");
+
+      expect(res.body).toHaveProperty("genre");
+      expect(res.body.genre).toBe("Unknown");
+
+      expect(res.body).toHaveProperty("rating");
+      expect(res.body.rating).toBe(1)
+    });
+  });
+
+  describe("can't POST a new favorite song", () => {
+    it("if that song has already been favorited", async () => {
+      const body = {
+        "title": "Don't Stop Me Now",
+        "artistName": "Queen"
+      }
+
+      const res = await request(app)
+      .post("/api/v1/favorites")
+      .send(body)
+
+      const res2 = await request(app)
+      .post("/api/v1/favorites")
+      .send(body)
+
+      expect(res2.statusCode).toBe(400);
+      expect(res2.body.message).toBe("You have already favorited Don't Stop Me Now by Queen!");
+    });
+
+    it("if Musixmatch has no record of that song in their API", async () => {
+      const body = {
+        "title": "fred",
+        "artistName": "Queen"
+      }
+
+      const res = await request(app)
+      .post("/api/v1/favorites")
+      .send(body)
+
+      expect(res.statusCode).toBe(400);
+      expect(res.body.error).toBe("No songs found matching that title and artist. Try again!");
+    });
+  });
+
   describe("can GET a favorite song", () => {
     it("with a correct song id", async () => {
       const favorite = await database("favorite_songs")
@@ -126,92 +212,6 @@ describe ("A user", () => {
 
       expect(res.body).toHaveProperty("error");
       expect(res.body.error).toBe("Song not found");
-    });
-  });
-
-  describe("can POST a new favorite song", () => {
-    it("by providing the title and artistName in the body", async () => {
-      const body = {
-        "title": "Don't Stop Me Now",
-        "artistName": "Queen"
-      }
-
-      const res = await request(app)
-      .post("/api/v1/favorites")
-      .send(body)
-
-      expect(res.statusCode).toBe(201);
-
-      expect(res.body).toHaveProperty("title");
-      expect(res.body.title).toBe("Don't Stop Me Now");
-
-      expect(res.body).toHaveProperty("artistName");
-      expect(res.body.artistName).toBe("Queen");
-
-      expect(res.body).toHaveProperty("genre");
-      expect(res.body.genre).toBe("Pop/Rock");
-
-      expect(res.body).toHaveProperty("rating");
-      expect(res.body.rating).toBe(81)
-    });
-
-    it("by providing the title and artistName in the body without a genre given by the API", async () => {
-      const body = {
-        "title": "Under Pressure",
-        "artistName": "Vanilla Ice vs. Queen Bowie"
-      }
-
-      const res = await request(app)
-      .post("/api/v1/favorites")
-      .send(body)
-
-      expect(res.statusCode).toBe(201);
-
-      expect(res.body).toHaveProperty("title");
-      expect(res.body.title).toBe("Ice Ice Baby Under Pressure (two tracker)");
-
-      expect(res.body).toHaveProperty("artistName");
-      expect(res.body.artistName).toBe("Vanilla Ice vs. Queen & Bowie");
-
-      expect(res.body).toHaveProperty("genre");
-      expect(res.body.genre).toBe("Unknown");
-
-      expect(res.body).toHaveProperty("rating");
-      expect(res.body.rating).toBe(1)
-    });
-  });
-
-  describe("can't POST a new favorite song", () => {
-    it("if that song has already been favorited", async () => {
-      const body = {
-        "title": "Don't Stop Me Now",
-        "artistName": "Queen"
-      }
-
-      const res = await request(app)
-      .post("/api/v1/favorites")
-      .send(body)
-
-      const res2 = await request(app)
-      .post("/api/v1/favorites")
-      .send(body)
-
-      expect(res2.statusCode).toBe(400);
-      expect(res2.body.message).toBe("You have already favorited Don't Stop Me Now by Queen!");
-    });
-
-    it("if Musixmatch has no record of that song in their API", async () => {
-      const body = {
-        "title": "fred",
-        "artistName": "Queen"
-      }
-
-      const res = await request(app)
-      .post("/api/v1/favorites")
-      .send(body)
-
-      expect(res.statusCode).toBe(400);
-      expect(res.body.error).toBe("No songs found matching that title and artist. Try again!");
     });
   });
 })
