@@ -54,13 +54,13 @@ const getAllPlaylists = router.get("/", async (request, response) => {
 const editPlaylist = router.put("/:id", async (request, response) => {
   const playlistId = request.params.id;
   const newTitle = request.body.playlistTitle;
-  const duplicatePlaylist = await database("playlists").where({title: `${newTitle}`});
+  const duplicatePlaylist = await database("playlists").where({title: newTitle});
   if (duplicatePlaylist[0]) {
     response.status(400).send({message: `You already have a playlist called ${newTitle}!`});
   } else {
-    const playlist = await database("playlists").where({id: `${playlistId}`});
+    const playlist = await database("playlists").where({id: playlistId});
     if (playlist[0]) {
-      const updatedPlaylist = await database("playlists").where({id: `${playlistId}`})
+      const updatedPlaylist = await database("playlists").where({id: playlistId})
         .update({title: `${newTitle}`})
         .returning(["id", "title", "created_at as createdAt", "updated_at as updatedAt"]);
       response.status(200).json(updatedPlaylist[0]);
