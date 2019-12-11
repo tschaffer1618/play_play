@@ -23,15 +23,10 @@ const getFavoriteSong = router.get('/:id', (request, response) => {
     });
 });
 
-const getAllFavoriteSongs = router.get('/', (request, response) => {
-  database('favorite_songs').select("id", "title", "artist_name as artistName", "genre", "rating")
-    .then((favoriteSongs) => {
-      response.status(200).send(favoriteSongs);
-    })
-    .catch((error) => {
-      response.status(500).json({ error });
-    });
-});
+const getAllFavoriteSongs = router.get('/', async (request, response) => {
+  const favSongs = await database('favorite_songs').select("id", "title", "artist_name as artistName", "genre", "rating")
+  response.status(200).send(favSongs)
+})
 
 const deleteFavoriteSong = router.delete("/:id", (request, response) => {
   const songId = request.params.id;
