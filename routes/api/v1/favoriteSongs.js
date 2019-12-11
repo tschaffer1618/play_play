@@ -23,21 +23,16 @@ const getAllFavoriteSongs = router.get("/", async (request, response) => {
   response.status(200).send(favSongs)
 })
 
-const deleteFavoriteSong = router.delete("/:id", (request, response) => {
+const deleteFavoriteSong = router.delete("/:id", async (request, response) => {
   const songId = request.params.id;
-
-  database("favorite_songs").where("id", songId)
-    .then(favorite => {
-      if (favorite[0]) {
-        database("favorite_songs").del().where({ id: songId })
-          .then(favorite => {
-            response.status(204).send();
-          });
-      } else {
-        return response.status(404).json({ error: "Song not found" });
-      }
-    });
-});
+  const favorite = await database("favorite_songs").where( "id", songId )
+  if (favorite[0]) {
+    const delSong = await database("favorite_songs").del().where({ id: songId })
+    response.status(204).send();
+  } else {
+    return response.status(404).json({ error: "Song not found" });
+  }
+})
 
 const createFavoriteSong = router.post("/", (request, response) => {
   const title = request.body.title;
