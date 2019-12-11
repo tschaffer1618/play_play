@@ -14,8 +14,11 @@ Play Play is an Express NodeJS RESTful API that returns detailed song data. A us
 ## Testing
 - To test this app, run `npm test`
 
+## Agile Board Link
+- This app's agile board can be accessed [here](https://github.com/tschaffer1618/play_play/projects/2)
+
 ## Heroku Production Link
-- This app and its production endpoints can be accessed at https://play-play-ts-lk.herokuapp.com/
+- This app and its production endpoints can be accessed [here via Heroku](https://play-play-ts-lk.herokuapp.com/)
 
 ## Endpoints
 **1.** `POST /api/v1/favorites`
