@@ -323,5 +323,5 @@ Play Play is an Express NodeJS RESTful API that returns detailed song data. A us
 - Production hosted on Heroku
 
 ## Contributors
-Play Play was written by Tyler Schaffer and Leiya Kenney as a Back End Mod 4 project at Turing School of Software and Design.
+Play Play was written by [Tyler Schaffer](https://github.com/tschaffer1618) and [Leiya Kenney](https://github.com/leiyakenney) as a Back End Mod 4 project at Turing School of Software and Design.
 
